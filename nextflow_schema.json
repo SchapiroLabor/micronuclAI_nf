@@ -5,6 +5,62 @@
     "description": "CIN quantification using deep learning",
     "type": "object",
     "definitions": {
+        "micronuclai_options": {
+            "title": "MicronuclAI options",
+            "type": "object",
+            "description": "micronuclAI parameters for CIN quantification",
+            "default": "",
+            "properties": {
+                "micronuclai_expansion": {
+                    "type": "integer",
+                    "default": 20,
+                    "fa_icon": "fas fa-ruler-combined",
+                    "description": "This parameter specifies the number of pixels that the bounding box will be expanded around the cell. An expansion of 0 the bounding box will be tight around the cell."
+                },
+                "micronuclai_resizing_factor": {
+                    "type": "number",
+                    "default": 0.6,
+                    "fa_icon": "fas fa-ruler-combined",
+                    "description": "The resizing factor specifies the relative size of the nuclei on the single cell crop. A resizing factor of 0.5 would mean that the cell would ocupy 50% of the final size of the image."
+                },
+                "micronuclai_size": {
+                    "type": "integer",
+                    "default": 256,
+                    "fa_icon": "fas fa-ruler-combined",
+                    "description": "Final image size of the cell patch"
+                }
+            },
+            "fa_icon": "fas fa-circle"
+        },
+        "segmentation_options": {
+            "title": "Segmentation Options",
+            "type": "object",
+            "description": "Options used for segmentation",
+            "default": "",
+            "properties": {
+                "stardist_n_tiles_y": {
+                    "type": "integer",
+                    "default": 3,
+                    "fa_icon": "fas fa-border-all",
+                    "description": "Number of tiles on the Y axis"
+                },
+                "stardist_n_tiles_x": {
+                    "type": "integer",
+                    "default": 3,
+                    "fa_icon": "fas fa-border-all",
+                    "description": "Number of tiles on the X axis"
+                },
+                "stardist_model": {
+                    "type": "string",
+                    "default": "2D_versatile_fluo",
+                    "fa_icon": "fas fa-cogs",
+                    "description": "Model to use for segmentation with stardist",
+                    "enum": ["2D_versatile_fluo", "2D_paper_dsb2018", "2D_versatile_he"]
+                }
+            },
+            "fa_icon": "fas fa-microscope",
+            "required": ["stardist_model"]
+        },
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
@@ -54,16 +110,6 @@
                     "description": "Name of iGenomes reference.",
                     "fa_icon": "fas fa-book",
                     "help_text": "If using a reference genome configured in the pipeline using iGenomes, use this parameter to give the ID for the reference. This is then used to build the full paths for all required reference genome files e.g. `--genome GRCh38`. \n\nSee the [nf-core website docs](https://nf-co.re/usage/reference_genomes) for more details."
-                },
-                "fasta": {
-                    "type": "string",
-                    "format": "file-path",
-                    "exists": true,
-                    "mimetype": "text/plain",
-                    "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
-                    "description": "Path to FASTA genome file.",
-                    "help_text": "This parameter is *mandatory* if `--genome` is not specified. If you don't have a BWA index available this will be generated for you automatically. Combine with `--save_reference` to save BWA index for future runs.",
-                    "fa_icon": "far fa-file-code"
                 },
                 "igenomes_ignore": {
                     "type": "boolean",
@@ -277,6 +323,12 @@
         }
     },
     "allOf": [
+        {
+            "$ref": "#/definitions/micronuclai_options"
+        },
+        {
+            "$ref": "#/definitions/segmentation_options"
+        },
         {
             "$ref": "#/definitions/input_output_options"
         },
