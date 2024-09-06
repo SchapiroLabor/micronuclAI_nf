@@ -177,11 +177,13 @@ workflow PIPELINE_COMPLETION {
 // Generate methods description for MultiQC
 //
 def toolCitationText() {
-    // TODO nf-core: Optionally add in-text citation tools to this list.
-    // Can use ternary operators to dynamically construct based conditions, e.g. params["run_xyz"] ? "Tool (Foo et al. 2023)" : "",
-    // Uncomment function in methodsDescriptionText to render in MultiQC report
     def citation_text = [
             "Tools used in the workflow included:",
+            "Mindagap (Guerreiro et al. 2023),",
+            params.segmentation_method == 'mesmer'   ? "Mesmer (Greenwald et al. 2021),"      : "",
+            params.segmentation_method == 'stardist' ? "Stardist (Weigert and Schmidt 2022)," : "",
+            params.segmentation_method == 'cellpose' ? "Cellpose (Stringer et al. 2021; Pachitariu et al 2022)," : "",
+            "micronuclAI (Ibarra-Arellano et al. 2024/2025)", // TODO add proper micronuclAI citation
             "MultiQC (Ewels et al. 2016)",
             "."
         ].join(' ').trim()
@@ -190,11 +192,11 @@ def toolCitationText() {
 }
 
 def toolBibliographyText() {
-    // TODO nf-core: Optionally add bibliographic entries to this list.
-    // Can use ternary operators to dynamically construct based conditions, e.g. params["run_xyz"] ? "<li>Author (2023) Pub name, Journal, DOI</li>" : "",
-    // Uncomment function in methodsDescriptionText to render in MultiQC report
     def reference_text = [
-            "<li>Ewels, P., Magnusson, M., Lundin, S., & Käller, M. (2016). MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics , 32(19), 3047–3048. doi: /10.1093/bioinformatics/btw354</li>"
+            params.segmentation_method == 'mesmer'   ? "<li>Greenwald, N.F., Miller, G., Moen, E. et al. Whole-cell segmentation of tissue images with human-level performance using large-scale data annotation and deep learning. Nat Biotechnol 40, 555–565 (2022). https://doi.org/10.1038/s41587-021-01094-0</li>"               : "",
+            params.segmentation_method == 'stardist' ? "<li>M. Weigert and U. Schmidt, Nuclei Instance Segmentation and Classification in Histopathology Images with Stardist, 2022 IEEE International Symposium on Biomedical Imaging Challenges (ISBIC), Kolkata, India, 2022, pp. 1-4, doi: 10.1109/ISBIC56247.2022.9854534.</li>" : "",
+            params.segmentation_method == 'cellpose' ? "<li>Stringer, C., Wang, T., Michaelos, M. et al. Cellpose: a generalist algorithm for cellular segmentation. Nat Methods 18, 100–106 (2021). https://doi.org/10.1038/s41592-020-01018-x</li>"                                                                                 : "",
+            "<li>Ewels, P., Magnusson, M., Lundin, S., & Käller, M. (2016). MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics , 32(19), 3047–3048. doi: /10.1093/bioinformatics/btw354</li>" // TODO add proper micronuclAI citation
         ].join(' ').trim()
 
     return reference_text
@@ -222,9 +224,8 @@ def methodsDescriptionText(mqc_methods_yaml) {
     meta["tool_citations"] = ""
     meta["tool_bibliography"] = ""
 
-    // TODO nf-core: Only uncomment below if logic in toolCitationText/toolBibliographyText has been filled!
-    // meta["tool_citations"] = toolCitationText().replaceAll(", \\.", ".").replaceAll("\\. \\.", ".").replaceAll(", \\.", ".")
-    // meta["tool_bibliography"] = toolBibliographyText()
+    meta["tool_citations"] = toolCitationText().replaceAll(", \\.", ".").replaceAll("\\. \\.", ".").replaceAll(", \\.", ".")
+    meta["tool_bibliography"] = toolBibliographyText()
 
 
     def methods_text = mqc_methods_yaml.text
