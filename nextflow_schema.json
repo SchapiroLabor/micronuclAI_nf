@@ -63,10 +63,39 @@
                     "fa_icon": "fas fa-cogs",
                     "description": "Model to use for segmentation with stardist",
                     "enum": ["2D_versatile_fluo", "2D_paper_dsb2018", "2D_versatile_he"]
+                },
+                "cellpose_pretrained_model": {
+                    "type": "string",
+                    "default": "nuclei",
+                    "description": "Pretrained Cellpose model to be used for segmentation.",
+                    "enum": ["nuclei", "cyto", "cyto2", "cyto3"],
+                    "fa_icon": "fas fa-balance-scale-left"
+                },
+                "cellpose_diameter": {
+                    "type": "integer",
+                    "default": 0,
+                    "description": "Cell diameter, if 0 will use the diameter of the training labels used in the model, or with built-in model will estimate diameter for each image.",
+                    "fa_icon": "fas fa-question-circle"
+                },
+                "cellpose_custom_model": {
+                    "type": "string",
+                    "description": "Custom Cellpose model can be provided by the user as a path. If provided, overwrites given pretrained_model value.",
+                    "fa_icon": "fas fa-balance-scale-right"
+                },
+                "cellpose_edge_exclude": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Should cells detected near image edges be excluded.",
+                    "fa_icon": "fas fa-cheese"
+                },
+                "cellpose_flow_threshold": {
+                    "type": "number",
+                    "default": 0.4,
+                    "description": "Flow error threshold for Cellpose.",
+                    "fa_icon": "fab fa-stack-overflow"
                 }
             },
-            "fa_icon": "fas fa-microscope",
-            "required": ["stardist_model"]
+            "fa_icon": "fas fa-microscope"
         },
         "input_output_options": {
             "title": "Input/output options",

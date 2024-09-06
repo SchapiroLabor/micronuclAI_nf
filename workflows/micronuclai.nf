@@ -34,20 +34,39 @@ workflow MICRONUCLAI {
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
 
-    // MODULE: run segmentation options
+    //
+    // SECTION: run segmentation options
+    //
+    segmentation_out = Channel.empty()
+    //
+    // MODULE: Run CELLPOSE
+    //
+    if ( params.segmentation_method == 'cellpose' ){
+        cellpose_custom_model = params.cellpose_custom_model ? segmentation_in.combine(Channel.fromPath(params.cellpose_custom_model)) : []
+        CELLPOSE(
+            ch_samplesheet,
+            cellpose_custom_model ? cellpose_custom_model.map{it[2]} : []
+            )
+        ch_versions = ch_versions.mix(CELLPOSE.out.versions)
+        segmentation_out = segmentation_out.mix(CELLPOSE.out.mask)
+    }
     //
     // MODULE: Run STARDIST
     //
-
-    STARDIST(ch_samplesheet)
-    ch_versions = ch_versions.mix(STARDIST.out.versions)
-    // STARDIST.out.mask.view()
+    if ( params.segmentation_method == 'stardist' ){
+        STARDIST(
+            ch_samplesheet
+        )
+        ch_versions = ch_versions.mix(STARDIST.out.versions)
+        segmentation_out = segmentation_out.mix(STARDIST.out.mask)
+    }
 
     //
     // MODULE: Run micronuclAI
     //
-    micronuclAI_in = ch_samplesheet.join(STARDIST.out.mask)
-    // micronuclAI_in.view()
+    ch_samplesheet
+        .join( segmentation_out )
+        .set { micronuclAI_in }
     MICRONUCLAI_PREDICT(micronuclAI_in)
     ch_versions = ch_versions.mix(MICRONUCLAI_PREDICT.out.versions)
 
