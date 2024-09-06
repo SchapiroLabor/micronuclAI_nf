@@ -1,0 +1,51 @@
+{
+    "Run micronuclAI": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test1.stardist_predictions.csv:md5,c64fa56faa3d46bf7866a0546eed66e3"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test1.stardist_summary.csv:md5,78baf09f7adbf6e95a073c8403578564"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,63dde8265c89f68102544df10dc54c1c"
+                ],
+                "predictions": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test1.stardist_predictions.csv:md5,c64fa56faa3d46bf7866a0546eed66e3"
+                    ]
+                ],
+                "stats": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test1.stardist_summary.csv:md5,78baf09f7adbf6e95a073c8403578564"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,63dde8265c89f68102544df10dc54c1c"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "24.04.4"
+        },
+        "timestamp": "2024-09-06T22:46:49.142059087"
+    }
+}

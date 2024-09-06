@@ -1,0 +1,56 @@
+nextflow_pipeline {
+
+    name "Test Workflow main.nf"
+    script "../main.nf"
+
+    test("Should run without failures - Cellpose") {
+
+        when {
+            params {
+                // define parameters here. Example:
+                outdir = "tests/results"
+                input = 'https://raw.githubusercontent.com/SchapiroLabor/nf-core-test-datasets/micronuclAI_nf/data/samplesheet.csv'
+                segmentation_method = 'cellpose'
+            }
+        }
+
+        then {
+            assert workflow.success
+        }
+
+    }
+
+    test("Should run without failures - Stardist") {
+
+        when {
+            params {
+                outdir = "tests/results"
+                input = 'https://raw.githubusercontent.com/SchapiroLabor/nf-core-test-datasets/micronuclAI_nf/data/samplesheet.csv'
+                segmentation_method = 'stardist'
+            }
+        }
+
+        then {
+            assert workflow.success
+        }
+
+    }
+
+    test("Should run without failures - Mesmer") {
+
+        when {
+            params {
+                outdir = "tests/results"
+                input = 'https://raw.githubusercontent.com/SchapiroLabor/nf-core-test-datasets/micronuclAI_nf/data/samplesheet.csv'
+                segmentation_method = 'mesmer'
+            }
+        }
+
+        then {
+            assert workflow.success
+        }
+
+    }
+
+
+}
