@@ -50,6 +50,13 @@
                     "fa_icon": "fas fa-border-all",
                     "description": "Number of tiles on the X axis"
                 },
+                "segmentation_method": {
+                    "type": "string",
+                    "default": "stardist",
+                    "fa_icon": "fas fa-cookie",
+                    "enum": ["cellpose", "stardist"],
+                    "description": "Define which segmentation option should be used: stardist or cellpose"
+                },
                 "stardist_model": {
                     "type": "string",
                     "default": "2D_versatile_fluo",
@@ -316,7 +323,7 @@
                     "type": "string",
                     "fa_icon": "far fa-check-circle",
                     "description": "Base URL or local path to location of pipeline test dataset files",
-                    "default": "https://raw.githubusercontent.com/nf-core/test-datasets/",
+                    "default": "https://raw.githubusercontent.com/SchapiroLabor/nf-core-test-datasets/",
                     "hidden": true
                 }
             }

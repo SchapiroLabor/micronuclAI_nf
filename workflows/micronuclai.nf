@@ -3,9 +3,16 @@
     IMPORT MODULES / SUBWORKFLOWS / FUNCTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-include { STARDIST               } from '../modules/nf-core/stardist/main'
+
+// local modules
 include { MICRONUCLAI_PREDICT    } from '../modules/local/micronuclai'
+
+// nf-core modules
+include { CELLPOSE               } from '../modules/nf-core/cellpose/main'
+include { STARDIST               } from '../modules/nf-core/stardist/main'
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
+
+// plugins and utils
 include { paramsSummaryMap       } from 'plugin/nf-validation'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -27,7 +34,7 @@ workflow MICRONUCLAI {
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
 
-    // ch_samplesheet.view()
+    // MODULE: run segmentation options
     //
     // MODULE: Run STARDIST
     //
