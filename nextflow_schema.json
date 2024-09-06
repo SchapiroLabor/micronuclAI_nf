@@ -38,6 +38,13 @@
             "description": "Options used for segmentation",
             "default": "",
             "properties": {
+                "segmentation_method": {
+                    "type": "string",
+                    "default": "stardist",
+                    "fa_icon": "fas fa-cookie",
+                    "enum": ["cellpose", "stardist", "mesmer"],
+                    "description": "Define which segmentation option should be used: valid options are stardist, cellpose or mesmer"
+                },
                 "stardist_n_tiles_y": {
                     "type": "integer",
                     "default": 3,
@@ -49,13 +56,6 @@
                     "default": 3,
                     "fa_icon": "fas fa-border-all",
                     "description": "Number of tiles on the X axis"
-                },
-                "segmentation_method": {
-                    "type": "string",
-                    "default": "stardist",
-                    "fa_icon": "fas fa-cookie",
-                    "enum": ["cellpose", "stardist"],
-                    "description": "Define which segmentation option should be used: stardist or cellpose"
                 },
                 "stardist_model": {
                     "type": "string",
@@ -93,6 +93,20 @@
                     "default": 0.4,
                     "description": "Flow error threshold for Cellpose.",
                     "fa_icon": "fab fa-stack-overflow"
+                },
+                "mesmer_compartment": {
+                    "type": "string",
+                    "default": "nuclear",
+                    "fa_icon": "fas fa-burn",
+                    "description": "Compartment to be segmented with Mesmer (nuclear, whole-cell).",
+                    "enum": ["nuclear", "whole-cell"]
+                },
+                "mesmer_image_mpp": {
+                    "type": "number",
+                    "default": 0.5,
+                    "fa_icon": "fas fa-square-full",
+                    "description": "Pixel size in microns for segmentation with Mesmer.",
+                    "minimum": 0
                 }
             },
             "fa_icon": "fas fa-microscope"

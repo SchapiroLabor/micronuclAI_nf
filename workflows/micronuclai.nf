@@ -9,6 +9,7 @@ include { MICRONUCLAI_PREDICT    } from '../modules/local/micronuclai'
 
 // nf-core modules
 include { CELLPOSE               } from '../modules/nf-core/cellpose/main'
+include { DEEPCELL_MESMER        } from '../modules/nf-core/deepcell/mesmer/main'
 include { STARDIST               } from '../modules/nf-core/stardist/main'
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 
@@ -59,6 +60,17 @@ workflow MICRONUCLAI {
         )
         ch_versions = ch_versions.mix(STARDIST.out.versions)
         segmentation_out = segmentation_out.mix(STARDIST.out.mask)
+    }
+    //
+    // MODULE: Run DEEPCELL_MESMER
+    //
+    if ( params.segmentation_method == 'mesmer' ){
+        DEEPCELL_MESMER(
+            ch_samplesheet,
+            [[:],[]]
+        )
+        ch_versions = ch_versions.mix(DEEPCELL_MESMER.out.versions)
+        segmentation_out = segmentation_out.mix(DEEPCELL_MESMER.out.mask)
     }
 
     //
