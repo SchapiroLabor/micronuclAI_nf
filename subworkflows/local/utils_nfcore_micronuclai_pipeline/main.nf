@@ -75,13 +75,16 @@ workflow PIPELINE_INITIALISATION {
     //
     // Custom validation for pipeline parameters
     //
-    // validateInputParameters()
+    //validateInputParameters()
 
     //
     // Create channel from input file provided through params.input
     //
     Channel
         .fromSamplesheet("input")
+        .map {
+            validateInputSamplesheet(it)
+        }
         .set { ch_samplesheet }
 
     emit:
@@ -139,25 +142,31 @@ workflow PIPELINE_COMPLETION {
 // Check and validate pipeline parameters
 //
 
-// def validateInputParameters() {
-//     genomeExistsError()
-// }
+//def validateInputParameters() {
+//    genomeExistsError()
+//}
 
 //
 // Validate channels from input samplesheet
 //
 
-// def validateInputSamplesheet(input) {
-//     def (metas, fastqs) = input[1..2]
+def validateInputSamplesheet(input) {
+    def (meta, image, segmentation) = input
 
-//     // Check that multiple runs of the same sample are of the same datatype i.e. single-end / paired-end
-//     def endedness_ok = metas.collect{ it.single_end }.unique().size == 1
-//     if (!endedness_ok) {
-//         error("Please check input samplesheet -> Multiple runs of a sample must be of the same datatype i.e. single-end or paired-end: ${metas[0].id}")
-//     }
-
-//     return [ metas[0], fastqs ]
-// }
+    // Check if segmentation mask is provided but skip_segmentation isn't toggled:
+    if (params.skip_segmentation) {
+        if (!segmentation){
+            error("Please add segmentation mask into the samplesheet if params.skip_segmentation = true")
+        }
+        return input
+    }
+    else {
+        if (segmentation){
+            error("Segmentation path is provided, please set params.skip_segmentation to false")
+        }
+        return [meta, image]
+    }
+}
 
 //
 // Exit pipeline if incorrect --genome key provided

@@ -36,49 +36,49 @@ workflow MICRONUCLAI {
     ch_multiqc_files = Channel.empty()
 
     //
-    // SECTION: run segmentation options
+    // SECTION: run segmentation
     //
-    segmentation_out = Channel.empty()
-    //
-    // MODULE: Run CELLPOSE
-    //
-    if ( params.segmentation_method == 'cellpose' ){
-        cellpose_custom_model = params.cellpose_custom_model ? segmentation_in.combine(Channel.fromPath(params.cellpose_custom_model)) : []
+    if (!params.skip_segmentation){
+        segmentation_out = Channel.empty()
+
+        //
+        // MODULE: Run CELLPOSE
+        //
         CELLPOSE(
             ch_samplesheet,
-            cellpose_custom_model ? cellpose_custom_model.map{it[2]} : []
-            )
+            params.cellpose_custom_model ? Channel.fromPath(params.cellpose_custom_model) : []
+        )
         ch_versions = ch_versions.mix(CELLPOSE.out.versions)
         segmentation_out = segmentation_out.mix(CELLPOSE.out.mask)
-    }
-    //
-    // MODULE: Run STARDIST
-    //
-    if ( params.segmentation_method == 'stardist' ){
+        //}
+        //
+        // MODULE: Run STARDIST
+        //
         STARDIST(
             ch_samplesheet
         )
         ch_versions = ch_versions.mix(STARDIST.out.versions)
         segmentation_out = segmentation_out.mix(STARDIST.out.mask)
-    }
-    //
-    // MODULE: Run DEEPCELL_MESMER
-    //
-    if ( params.segmentation_method == 'mesmer' ){
+        //
+        // MODULE: Run DEEPCELL_MESMER
+        //
         DEEPCELL_MESMER(
             ch_samplesheet,
             [[:],[]]
         )
         ch_versions = ch_versions.mix(DEEPCELL_MESMER.out.versions)
         segmentation_out = segmentation_out.mix(DEEPCELL_MESMER.out.mask)
+        ch_samplesheet
+            .join( segmentation_out )
+            .set { micronuclAI_in }
     }
-
+    else{
+        ch_samplesheet
+            .set { micronuclAI_in }
+    }
     //
     // MODULE: Run micronuclAI
     //
-    ch_samplesheet
-        .join( segmentation_out )
-        .set { micronuclAI_in }
     MICRONUCLAI_PREDICT(micronuclAI_in)
     ch_versions = ch_versions.mix(MICRONUCLAI_PREDICT.out.versions)
 

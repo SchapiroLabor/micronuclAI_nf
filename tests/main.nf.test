@@ -52,5 +52,52 @@ nextflow_pipeline {
 
     }
 
+    test("Should run without failures - skip_segmentation") {
+
+        when {
+            params {
+                outdir = "tests/results"
+                input = 'https://raw.githubusercontent.com/SchapiroLabor/nf-core-test-datasets/micronuclAI_nf/data/samplesheet_skip_seg.csv'
+                skip_segmentation = true
+            }
+        }
+
+        then {
+            assert workflow.success
+        }
+
+    }
+
+    test("Should fail - skip_segmentation") {
+
+        when {
+            params {
+                outdir = "tests/results"
+                input = 'https://raw.githubusercontent.com/SchapiroLabor/nf-core-test-datasets/micronuclAI_nf/data/samplesheet.csv'
+                skip_segmentation = true
+            }
+        }
+
+        then {
+            assert workflow.failed
+        }
+
+    }
+
+    test("Should fail - skip_segmentation") {
+
+        when {
+            params {
+                outdir = "tests/results"
+                input = 'https://raw.githubusercontent.com/SchapiroLabor/nf-core-test-datasets/micronuclAI_nf/data/samplesheet_skip_seg.csv'
+                skip_segmentation = false
+            }
+        }
+
+        then {
+            assert workflow.failed
+        }
+
+    }
 
 }
