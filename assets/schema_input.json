@@ -19,6 +19,13 @@
                 "exists": true,
                 "pattern": "^\\S+\\.(tif|tiff)$",
                 "errorMessage": "Image path must be provided, cannot contain spaces and must have extension '.tiff' or '.tif'"
+            },
+            "segmentation": {
+                "type": "string",
+                "format": "file-path",
+                "exists": false,
+                "pattern": "^\\S+\\.(tif|tiff)$",
+                "errorMessage": "Image path must be provided, cannot contain spaces and must have extension '.tiff' or '.tif'"
             }
         },
         "required": ["sample", "image"]

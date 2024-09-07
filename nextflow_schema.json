@@ -38,6 +38,11 @@
             "description": "Options used for segmentation",
             "default": "",
             "properties": {
+                "skip_segmentation": {
+                    "type": "boolean",
+                    "description": "Should segmentation be skipped? Automatically set to true if values provided in the segmentation column of the samplesheet.",
+                    "fa_icon": "far fa-times-circle"
+                },
                 "segmentation_method": {
                     "type": "string",
                     "default": "stardist",
