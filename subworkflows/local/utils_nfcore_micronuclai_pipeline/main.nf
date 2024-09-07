@@ -188,11 +188,10 @@ def validateInputSamplesheet(input) {
 def toolCitationText() {
     def citation_text = [
             "Tools used in the workflow included:",
-            "Mindagap (Guerreiro et al. 2023),",
             params.segmentation_method == 'mesmer'   ? "Mesmer (Greenwald et al. 2021),"      : "",
             params.segmentation_method == 'stardist' ? "Stardist (Weigert and Schmidt 2022)," : "",
             params.segmentation_method == 'cellpose' ? "Cellpose (Stringer et al. 2021; Pachitariu et al 2022)," : "",
-            "micronuclAI (Ibarra-Arellano et al. 2024/2025)", // TODO add proper micronuclAI citation
+            "micronuclAI (Ibarra-Arellano et al. 2024),",
             "MultiQC (Ewels et al. 2016)",
             "."
         ].join(' ').trim()
@@ -205,7 +204,8 @@ def toolBibliographyText() {
             params.segmentation_method == 'mesmer'   ? "<li>Greenwald, N.F., Miller, G., Moen, E. et al. Whole-cell segmentation of tissue images with human-level performance using large-scale data annotation and deep learning. Nat Biotechnol 40, 555–565 (2022). https://doi.org/10.1038/s41587-021-01094-0</li>"               : "",
             params.segmentation_method == 'stardist' ? "<li>M. Weigert and U. Schmidt, Nuclei Instance Segmentation and Classification in Histopathology Images with Stardist, 2022 IEEE International Symposium on Biomedical Imaging Challenges (ISBIC), Kolkata, India, 2022, pp. 1-4, doi: 10.1109/ISBIC56247.2022.9854534.</li>" : "",
             params.segmentation_method == 'cellpose' ? "<li>Stringer, C., Wang, T., Michaelos, M. et al. Cellpose: a generalist algorithm for cellular segmentation. Nat Methods 18, 100–106 (2021). https://doi.org/10.1038/s41592-020-01018-x</li>"                                                                                 : "",
-            "<li>Ewels, P., Magnusson, M., Lundin, S., & Käller, M. (2016). MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics , 32(19), 3047–3048. doi: /10.1093/bioinformatics/btw354</li>" // TODO add proper micronuclAI citation
+            "<li>Ibarra-Arellano, M.A., Caprio, L.A., Hada, A. et al. (2024). micronuclAI: Automated quantification of micronuclei for assessment of chromosomal instability. bioRxiv 2024.05.24.595722; doi: https://doi.org/10.1101/2024.05.24.595722</li>",
+            "<li>Ewels, P., Magnusson, M., Lundin, S., & Käller, M. (2016). MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics , 32(19), 3047–3048. doi: /10.1093/bioinformatics/btw354</li>"
         ].join(' ').trim()
 
     return reference_text
