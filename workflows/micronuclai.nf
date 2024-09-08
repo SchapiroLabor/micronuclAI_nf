@@ -139,11 +139,8 @@ workflow MICRONUCLAI {
             name: 'summary_complete.csv',
             storeDir: "${params.outdir}/multiqc" )
     )
-    //ch_multiqc_files = ch_multiqc_files.mix(
-    //    MICRONUCLAI_PREDICT.out.stats.collectFile(name: "micronuclAI_summary.csv"))
-    //ch_multiqc_files = ch_multiqc_files.mix(
-    //    ch_transformed_stats.map{ it[1] }
-    //    .collectFile(name: 'summary.all_samples.csv', keepHeader: true, storeDir: "${params.outdir}/multiqc"))
+    ch_multiqc_files.view()
+
     MULTIQC (
         ch_multiqc_files.collect(),
         ch_multiqc_config.toList(),

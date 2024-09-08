@@ -1,11 +1,9 @@
 #!/usr/bin/env nextflow
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    nf-core/micronuclai
+    micronuclAI_nf
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Github : https://github.com/nf-core/micronuclai
-    Website: https://nf-co.re/micronuclai
-    Slack  : https://nfcore.slack.com/channels/micronuclai
+    Github : https://github.com/SchapiroLabor/micronuclAI_nf
 ----------------------------------------------------------------------------------------
 */
 
