@@ -1,4 +1,4 @@
-# nf-core/micronuclai: Output
+# micronuclAI: Output
 
 ## Introduction
 
@@ -12,32 +12,45 @@ The directories listed below will be created in the results directory after the 
 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
 
-- [FastQC](#fastqc) - Raw read QC
+- [Segmentation](#segmentation) - perform cell segmentation based on provided nuclear image.
+- [MicronuclAI](#micronuclai) - detect micronuclei based on image and segmentation mask
 - [MultiQC](#multiqc) - Aggregate report describing results and QC from the whole pipeline
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
-### FastQC
+### Segmentation
 
 <details markdown="1">
 <summary>Output files</summary>
 
-- `fastqc/`
-  - `*_fastqc.html`: FastQC report containing quality metrics.
-  - `*_fastqc.zip`: Zip archive containing the FastQC report, tab-delimited data file and plot images.
+- `segmentation/`
+  - `cellpose/`
+    - `*_cellpose_mask.tif`: Segmentation mask created by [Cellpose](https://www.nature.com/articles/s41592-020-01018-x) if selected.
+  - `stardist/`
+    - `*_stardist_mask.tif`: Segmentation mask created by [Stardist](https://github.com/stardist/stardist) if selected.
+  - `mesmer/`
+    - `*_mesmer_mask.tif`: Segmentation mask created by [Deepcell Mesmer](https://www.nature.com/articles/s41587-021-01094-0) if selected.
 
 </details>
 
-[FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/) gives general quality metrics about your sequenced reads. It provides information about the quality score distribution across your reads, per base sequence content (%A/T/G/C), adapter contamination and overrepresented sequences. For further reading and documentation see the [FastQC help pages](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/).
-
-![MultiQC - FastQC sequence counts plot](images/mqc_fastqc_counts.png)
-
-![MultiQC - FastQC mean quality scores plot](images/mqc_fastqc_quality.png)
-
-![MultiQC - FastQC adapter content plot](images/mqc_fastqc_adapter.png)
+In the case that precomputed segmentation masks are not provided, segmentation tools produce a labeled segmentation mask based on the nuclear image values.
+Selection of tools includes [Stardist](https://github.com/stardist/stardist), [Cellpose](https://www.nature.com/articles/s41592-020-01018-x), and [Deepcell Mesmer](https://www.nature.com/articles/s41587-021-01094-0), all of which come with pretrained models.
 
 :::note
-The FastQC plots displayed in the MultiQC report shows _untrimmed_ reads. They may contain adapter sequence and potentially regions with low quality.
+Depending on which segmentation method is selected with the `segmentation_method` parameter, the respective outputs are provided. If a segmentation mask is provided in the input, segmentation is skipped.
 :::
+
+### MicronuclAI
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `micronuclai/`
+  - `*_predictions.csv`: A `csv` file containing cell label information in the `image` column, the predicted score by the model in the `score` column, and the prediction for number of micronuclei found per cell in the `micronuclei` column
+  - `*_summary.csv`: A `csv` file containing a summary of detected micronuclei metrics - count per number of micronuclei, number of total cells, number of total micronuclei, number of cells with micronuclei, proportion of cells with micronuclei, ratio of total micronuclei counts with the number of cells.
+
+</details>
+
+[micronuclAI](https://www.biorxiv.org/content/10.1101/2024.05.24.595722v1.full.pdf) is a tool to predict the number of micronuclei in high-resolution microscopy images based on single-cell crops extracted with the help of segmentation masks. Predictions are done by a pre-trained convolutional neural network model.
 
 ### MultiQC
 

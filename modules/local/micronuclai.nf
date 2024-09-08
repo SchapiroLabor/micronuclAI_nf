@@ -2,7 +2,7 @@ process MICRONUCLAI_PREDICT {
     tag "$meta.id"
     label 'process_single'
 
-    container "ghcr.io/schapirolabor/micronuclai:main"
+    container "ghcr.io/schapirolabor/micronuclai:main" //TODO: set specific version
 
     input:
     tuple val(meta), path(image), path(mask)
@@ -16,8 +16,9 @@ process MICRONUCLAI_PREDICT {
     task.ext.when == null || task.ext.when
 
     script:
-    def args   = task.ext.args   ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def args    = task.ext.args   ?: ''
+    def prefix  = task.ext.prefix ?: "${meta.id}"
+    def VERSION = 0.0.1
     """
     python /micronuclAI/src/model/prediction2.py \\
         -i $image \\
@@ -28,20 +29,21 @@ process MICRONUCLAI_PREDICT {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        micronuclai: 0.0.1
+        micronuclAI: ${VERSION}
     END_VERSIONS
     """
 
     stub:
     def args   = task.ext.args   ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def VERSION = 0.0.1
     """
     touch ${prefix}_predictions.csv
     touch ${prefix}_summary.csv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        micronuclai: 0.0.1
+        micronuclAI: ${VERSION}
     END_VERSIONS
     """
 }
