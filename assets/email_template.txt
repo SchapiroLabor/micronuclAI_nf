@@ -1,18 +1,18 @@
 ----------------------------------------------------
-                                        ,--./,-.
-        ___     __   __   __   ___     /,-._.--~\\
-  |\\ | |__  __ /  ` /  \\ |__) |__         }  {
-  | \\| |       \\__, \\__/ |  \\ |___     \\`-._,-`-,
-                                        `._,._,'
-  nf-core/micronuclai ${version}
+                                          ,--./,-.
+          ___     __   __   __   ___     /,-._.--~\
+    |\ | |__  __ /  ` /  \ |__) |__         }  {
+    | \| |       \__, \__/ |  \ |___     \`-._,-`-,
+                                          `._,._,'
+  micronuclAI_nf ${version}
 ----------------------------------------------------
 Run Name: $runName
 
 <% if (success){
-    out << "## nf-core/micronuclai execution completed successfully! ##"
+    out << "## micronuclAI_nf execution completed successfully! ##"
 } else {
     out << """####################################################
-## nf-core/micronuclai execution completed unsuccessfully! ##
+## micronuclAI_nf execution completed unsuccessfully! ##
 ####################################################
 The exit status of the task that caused the workflow execution to fail was: $exitStatus.
 The full error message was:
@@ -35,5 +35,5 @@ Pipeline Configuration:
 <% out << summary.collect{ k,v -> " - $k: $v" }.join("\n") %>
 
 --
-nf-core/micronuclai
-https://github.com/nf-core/micronuclai
+micronuclAI_nf
+https://github.com/SchapiroLabor/micronuclAI_nf

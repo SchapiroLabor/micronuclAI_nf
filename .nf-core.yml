@@ -5,3 +5,7 @@ lint:
   nextflow_config:
     - manifest.homePage
   multiqc_config: False
+  files_unchanged:
+    - assets/email_template.html
+    - assets/email_template.txt
+    - assets/sendmail_template.txt
