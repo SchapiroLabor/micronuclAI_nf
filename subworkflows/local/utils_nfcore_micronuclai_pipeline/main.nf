@@ -181,7 +181,7 @@ def arrangeSummaryFiles(meta, summary_file ){
     }
 
     // Create the output CSV header
-    def header = "sample,total_cells,total_micronuclei,cells_with_micronuclei,cells_with_micronuclei_ratio,micronuclei_ratio,0,1,2,3,4,5_or_more"
+    def header = "sample,total_cells,total_micronuclei,cells_with_micronuclei,cells_with_micronuclei_ratio,micronuclei_ratio,CIN_0,CIN_1,CIN_2,CIN_3,CIN_4,CIN_5_or_more"
     def sample = meta.id
     def totalCells = data['total_cells'] ?: "0"
     def totalMicronuclei = data['total_micronuclei'] ?: "0"
@@ -189,11 +189,13 @@ def arrangeSummaryFiles(meta, summary_file ){
     def cellsWithMicronucleiRatio = data['cells_with_micronuclei_ratio'] ?: "0"
     def micronucleiRatio = data['micronuclei_ratio'] ?: "0"
 
-    // Extract counts for specific micronuclei numbers (0, 1 ...)
-    def counts = [0, 1, 2, 3, 4].collect { data[it.toString()] ?: "0" } // Count for 0-4
-    def moreThan5 = data.findAll { key, value -> key.isInteger() && key.toInteger() >= 5 }
-                    .collect { it.value.toFloat() }
-                    .sum() ?: 0
+    def counts = [0, 1, 2, 3, 4].collect { key ->
+        data[key.toString()] ?: 0
+    }
+    def moreThan5 = data.findAll { key, value ->
+        key.isInteger() && key.toInteger() >= 5
+        }.collect { it.value.toFloat() }
+        .sum() ?: 0
 
     def row = "$sample,$totalCells,$totalMicronuclei,$cellsWithMicronuclei,$cellsWithMicronucleiRatio,$micronucleiRatio,${counts.join(',')},$moreThan5"
     def outputCsv = new File(outputCsvPath)

@@ -1,6 +1,6 @@
 {
-    "name": "nf-core/micronuclai",
-    "homePage": "https://github.com/nf-core/micronuclai",
+    "name": "micronuclAI_nf",
+    "homePage": "https://github.com/SchapiroLabor/micronuclAI_nf",
     "repos": {
         "https://github.com/nf-core/modules.git": {
             "modules": {

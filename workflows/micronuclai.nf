@@ -86,11 +86,13 @@ workflow MICRONUCLAI {
     MICRONUCLAI_PREDICT.out.stats.map { meta, summary ->
         def result = arrangeSummaryFiles(meta, summary)
         return result
-        }.collectFile(name: 'summary.all_samples.csv', newLine: true)
-        .map{ file ->
-            def result = finalizeSummaryFile(file)
-            return result
-        }.set { finalized_summary }
+        }.set{ ch_summary_rearranged }
+    //ch_summary_rearranged
+    //    .collectFile(name: 'summary.all_samples.csv', newLine: true)
+    //    .map{ file ->
+    //        def result = finalizeSummaryFile(file)
+    //        return result
+    //    }.set { finalized_summary }
 
     //
     // Collate and save software versions
@@ -134,12 +136,15 @@ workflow MICRONUCLAI {
             sort: true
         )
     )
+    //ch_multiqc_files = ch_multiqc_files.mix(
+    //    finalized_summary.collectFile(
+    //        name: 'summary_complete_mcq.yaml',
+    //        storeDir: "${params.outdir}/multiqc" )
+    //)
     ch_multiqc_files = ch_multiqc_files.mix(
-        finalized_summary.collectFile(
-            name: 'summary_complete.csv',
-            storeDir: "${params.outdir}/multiqc" )
+        ch_summary_rearranged.collectFile()
     )
-    ch_multiqc_files.view()
+
 
     MULTIQC (
         ch_multiqc_files.collect(),

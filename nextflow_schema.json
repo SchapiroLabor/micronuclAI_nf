@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/nf-core/micronuclai/master/nextflow_schema.json",
-    "title": "nf-core/micronuclai pipeline parameters",
+    "$id": "https://raw.githubusercontent.com/SchapiroLabor/micronuclAI_nf/master/nextflow_schema.json",
+    "title": "SchapiroLabor/micronuclAI_nf pipeline parameters",
     "description": "CIN quantification using deep learning",
     "type": "object",
     "definitions": {

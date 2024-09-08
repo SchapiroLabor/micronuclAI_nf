@@ -10,7 +10,7 @@ on:
 jobs:
   run-platform:
     name: Run AWS full tests
-    if: github.repository == 'nf-core/micronuclai'
+    if: github.repository == 'SchapiroLabor/micronuclAI_nf'
     runs-on: ubuntu-latest
     steps:
       - name: Launch workflow via Seqera Platform
