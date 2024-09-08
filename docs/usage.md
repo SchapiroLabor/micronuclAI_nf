@@ -1,7 +1,5 @@
 # nf-core/micronuclai: Usage
 
-## :warning: Please read this documentation on the nf-core website: [https://nf-co.re/micronuclai/usage](https://nf-co.re/micronuclai/usage)
-
 > _Documentation of pipeline parameters is generated automatically from the pipeline schema and can no longer be found in markdown files._
 
 ## Introduction
@@ -16,48 +14,30 @@ You will need to create a samplesheet with information about the samples you wou
 --input '[path to samplesheet file]'
 ```
 
-### Multiple runs of the same sample
+### Example of a samplesheet file
 
-The `sample` identifiers have to be the same when you have re-sequenced the same sample more than once e.g. to increase sequencing depth. The pipeline will concatenate the raw reads before performing any downstream analysis. Below is an example for the same sample sequenced across 3 lanes:
-
-```csv title="samplesheet.csv"
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L003_R1_001.fastq.gz,AEG588A1_S1_L003_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L004_R1_001.fastq.gz,AEG588A1_S1_L004_R2_001.fastq.gz
-```
-
-### Full samplesheet
-
-The pipeline will auto-detect whether a sample is single- or paired-end using the information provided in the samplesheet. The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 3 columns to match those defined in the table below.
-
-A final samplesheet file consisting of both single- and paired-end data may look something like the one below. This is for 6 samples, where `TREATMENT_REP3` has been sequenced twice.
+The `sample` identifier has to be unique per row of the samplesheet. Input image (2-dimensional nuclear image) has to be provided in the `image` column. Optionally a pre-computed segmentation mask can be provided in the `segmentation` column (if provided, you need to use set `params.skip_segmentation = true`), otherwise segmentation will be computed by a provided segmentation tool.
 
 ```csv title="samplesheet.csv"
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP2,AEG588A2_S2_L002_R1_001.fastq.gz,AEG588A2_S2_L002_R2_001.fastq.gz
-CONTROL_REP3,AEG588A3_S3_L002_R1_001.fastq.gz,AEG588A3_S3_L002_R2_001.fastq.gz
-TREATMENT_REP1,AEG588A4_S4_L003_R1_001.fastq.gz,
-TREATMENT_REP2,AEG588A5_S5_L003_R1_001.fastq.gz,
-TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,
-TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,
+sample,image,segmentation
+CONTROL1,control1_image.tif,control1_mask.tif
+TEST1,test1_image.tif,test1_mask.tif
 ```
 
-| Column    | Description                                                                                                                                                                            |
-| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`  | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
-| `fastq_1` | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
-| `fastq_2` | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
+| Column         | Description                                                                                                                                                                         | Required |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| `sample`       | Unique identifier for each row in the samplesheet. Each `sample` must be unique per row.                                                                                            | Yes      |
+| `image`        | Full path to the 2-dimensional nuclear image that needs to be provided in this column.                                                                                              | Yes      |
+| `segmentation` | Optional column for a pre-computed segmentation mask. If provided, you must set `params.skip_segmentation = true`, otherwise segmentation will be computed using the provided tool. | No       |
 
-An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
+Two example samplesheets ([1](../assets/samplesheet.csv), [2](../assets/samplesheet_skip_seg.csv)) have been provided with the pipeline.
 
 ## Running the pipeline
 
 The typical command for running the pipeline is as follows:
 
 ```bash
-nextflow run nf-core/micronuclai --input ./samplesheet.csv --outdir ./results --genome GRCh37 -profile docker
+nextflow run SchapiroLabor/micronuclAI_nf --input ./samplesheet.csv --outdir ./results  -profile docker
 ```
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
@@ -82,7 +62,7 @@ Do not use `-c <file>` to specify parameters as this will result in errors. Cust
 The above pipeline run specified with a params file in yaml format:
 
 ```bash
-nextflow run nf-core/micronuclai -profile docker -params-file params.yaml
+nextflow run SchapiroLabor/micronuclAI_nf -profile docker -params-file params.yaml
 ```
 
 with `params.yaml` containing:
@@ -90,7 +70,8 @@ with `params.yaml` containing:
 ```yaml
 input: './samplesheet.csv'
 outdir: './results/'
-genome: 'GRCh37'
+skip_segmentation: false
+segmentation_method: stardist
 <...>
 ```
 
@@ -101,14 +82,14 @@ You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-c
 When you run the above command, Nextflow automatically pulls the pipeline code from GitHub and stores it as a cached version. When running the pipeline after this, it will always use the cached version if available - even if the pipeline has been updated since. To make sure that you're running the latest version of the pipeline, make sure that you regularly update the cached version of the pipeline:
 
 ```bash
-nextflow pull nf-core/micronuclai
+nextflow pull SchapiroLabor/micronuclAI_nf
 ```
 
 ### Reproducibility
 
 It is a good idea to specify a pipeline version when running the pipeline on your data. This ensures that a specific version of the pipeline code and software are used when you run your pipeline. If you keep using the same tag, you'll be running the same version of the pipeline, even if there have been changes to the code since.
 
-First, go to the [nf-core/micronuclai releases page](https://github.com/nf-core/micronuclai/releases) and find the latest pipeline version - numeric only (eg. `1.3.1`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 1.3.1`. Of course, you can switch to another version by changing the number after the `-r` flag.
+First, go to the [micronuclAI_nf releases page](https://github.com/SchapiroLabor/micronuclAI_nf/releases) and find the latest pipeline version - numeric only (eg. `1.3.1`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 1.3.1`. Of course, you can switch to another version by changing the number after the `-r` flag.
 
 This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future. For example, at the bottom of the MultiQC reports.
 
@@ -143,6 +124,9 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
 
 - `test`
   - A profile with a complete configuration for automated testing
+  - Includes links to test data so needs no other parameters
+- `test_skip_seg`
+  - A profile with a complete configuration for automated testing with skipped segmentation
   - Includes links to test data so needs no other parameters
 - `docker`
   - A generic configuration profile to be used with [Docker](https://docker.com/)
