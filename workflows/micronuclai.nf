@@ -18,6 +18,8 @@ include { paramsSummaryMap       } from 'plugin/nf-validation'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_micronuclai_pipeline'
+include { arrangeSummaryFiles    } from '../subworkflows/local/utils_nfcore_micronuclai_pipeline'
+include { finalizeSummaryFile    } from '../subworkflows/local/utils_nfcore_micronuclai_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -50,7 +52,7 @@ workflow MICRONUCLAI {
         )
         ch_versions = ch_versions.mix(CELLPOSE.out.versions)
         segmentation_out = segmentation_out.mix(CELLPOSE.out.mask)
-        //}
+
         //
         // MODULE: Run STARDIST
         //
@@ -81,6 +83,14 @@ workflow MICRONUCLAI {
     //
     MICRONUCLAI_PREDICT(micronuclAI_in)
     ch_versions = ch_versions.mix(MICRONUCLAI_PREDICT.out.versions)
+    MICRONUCLAI_PREDICT.out.stats.map { meta, summary ->
+        def result = arrangeSummaryFiles(meta, summary)
+        return result
+        }.collectFile(name: 'summary.all_samples.csv', newLine: true)
+        .map{ file ->
+            def result = finalizeSummaryFile(file)
+            return result
+        }.set { finalized_summary }
 
     //
     // Collate and save software versions
@@ -124,7 +134,16 @@ workflow MICRONUCLAI {
             sort: true
         )
     )
-
+    ch_multiqc_files = ch_multiqc_files.mix(
+        finalized_summary.collectFile(
+            name: 'summary_complete.csv',
+            storeDir: "${params.outdir}/multiqc" )
+    )
+    //ch_multiqc_files = ch_multiqc_files.mix(
+    //    MICRONUCLAI_PREDICT.out.stats.collectFile(name: "micronuclAI_summary.csv"))
+    //ch_multiqc_files = ch_multiqc_files.mix(
+    //    ch_transformed_stats.map{ it[1] }
+    //    .collectFile(name: 'summary.all_samples.csv', keepHeader: true, storeDir: "${params.outdir}/multiqc"))
     MULTIQC (
         ch_multiqc_files.collect(),
         ch_multiqc_config.toList(),

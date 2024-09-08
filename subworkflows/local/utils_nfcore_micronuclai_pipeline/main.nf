@@ -168,6 +168,70 @@ def validateInputSamplesheet(input) {
     }
 }
 
+def arrangeSummaryFiles(meta, summary_file ){
+    def inputSampleName = meta.id // get sample ID
+    def outputCsvPath = summary_file.getName().split('\\.')[0] + "_resummarize.csv"
+
+    def lines = summary_file.readLines()
+    // Parse the input CSV into a map for easy lookup
+    def data = [:]
+    lines.each { line ->
+        def (key, value) = line.split(',')
+        data[key] = value
+    }
+
+    // Create the output CSV header
+    def header = "sample,total_cells,total_micronuclei,cells_with_micronuclei,cells_with_micronuclei_ratio,micronuclei_ratio,0,1,2,3,4,5_or_more"
+    def sample = meta.id
+    def totalCells = data['total_cells'] ?: "0"
+    def totalMicronuclei = data['total_micronuclei'] ?: "0"
+    def cellsWithMicronuclei = data['cells_with_micronuclei'] ?: "0"
+    def cellsWithMicronucleiRatio = data['cells_with_micronuclei_ratio'] ?: "0"
+    def micronucleiRatio = data['micronuclei_ratio'] ?: "0"
+
+    // Extract counts for specific micronuclei numbers (0, 1 ...)
+    def counts = [0, 1, 2, 3, 4].collect { data[it.toString()] ?: "0" } // Count for 0-4
+    def moreThan5 = data.findAll { key, value -> key.isInteger() && key.toInteger() >= 5 }
+                    .collect { it.value.toFloat() }
+                    .sum() ?: 0
+
+    def row = "$sample,$totalCells,$totalMicronuclei,$cellsWithMicronuclei,$cellsWithMicronucleiRatio,$micronucleiRatio,${counts.join(',')},$moreThan5"
+    def outputCsv = new File(outputCsvPath)
+    outputCsv.text = "$header\n$row"
+
+    return outputCsv
+}
+
+def finalizeSummaryFile(csvFile) {
+    def lines = csvFile.readLines()  // Read all lines from the file
+    def newContent = []
+    def outputCsvPath = csvFile.getName().split('\\.')[0] + "_complete.csv"
+
+    // Keep the first row (header)
+    newContent << lines[0]
+
+    lines.drop(1).eachWithIndex { line, index ->
+        if ((index + 1) % 2 != 0) {  // Only keep even-indexed lines
+            newContent << line
+        }
+    }
+    // Extract header and data
+    def header = newContent[0]
+    def data = newContent.drop(1)
+    def sortedData = data.sort { a, b ->
+        def aValues = a.split(',')
+        def bValues = b.split(',')
+        def comparison = aValues[0].compareTo(bValues[0])
+        comparison
+    }
+    def sortedContent = [header] + sortedData
+
+    def outputCsv = new File(outputCsvPath)
+    outputCsv.text = sortedContent.join('\n')
+
+    return outputCsv
+}
+
 //
 // Exit pipeline if incorrect --genome key provided
 //

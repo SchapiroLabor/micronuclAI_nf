@@ -17,3 +17,12 @@ report_section_order:
 export_plots: true
 
 disable_version_detection: true
+
+custom_data:
+  micronuclei:
+    description: "Summary of micronuclei analysis for each sample."
+    plot_type: "bargraph"
+    fields:
+      - { title: "Total Cells", key: "total_cells" }
+      - { title: "Cells with Micronuclei", key: "cells_with_micronuclei" }
+      - { title: "Micronuclei Ratio", key: "micronuclei_ratio" }
