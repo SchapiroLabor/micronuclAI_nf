@@ -1,6 +1,6 @@
-# nf-core/micronuclai: Documentation
+# micronuclAI_nf: Documentation
 
-The nf-core/micronuclai documentation is split into the following pages:
+The micronuclAI_nf documentation is split into the following pages:
 
 - [Usage](usage.md)
   - An overview of how the pipeline works, how to run it and a description of all of the different command-line flags.

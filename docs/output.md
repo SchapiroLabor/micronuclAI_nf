@@ -6,8 +6,6 @@ This document describes the output produced by the pipeline. Most of the plots a
 
 The directories listed below will be created in the results directory after the pipeline has finished. All paths are relative to the top-level results directory.
 
-<!-- TODO nf-core: Write this documentation describing your workflow's output -->
-
 ## Pipeline overview
 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
@@ -50,7 +48,7 @@ Depending on which segmentation method is selected with the `segmentation_method
 
 </details>
 
-[micronuclAI](https://www.biorxiv.org/content/10.1101/2024.05.24.595722v1.full.pdf) is a tool to predict the number of micronuclei in high-resolution microscopy images based on single-cell crops extracted with the help of segmentation masks. Predictions are done by a pre-trained convolutional neural network model.
+[micronuclAI](https://www.biorxiv.org/content/10.1101/2024.05.24.595722v1) is a tool to predict the number of micronuclei in high-resolution microscopy images based on single-cell crops extracted with the help of segmentation masks. Predictions are done by a pre-trained convolutional neural network model.
 
 ### MultiQC
 
