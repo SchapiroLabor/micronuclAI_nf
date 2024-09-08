@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/nf-core/micronuclai/master/assets/schema_input.json",
-    "title": "nf-core/micronuclai pipeline - params.input schema",
+    "$id": "https://raw.githubusercontent.com/SchapiroLabor/micronuclAI_nf/dev/assets/schema_input.json",
+    "title": "micronuclAI_nf pipeline - params.input schema",
     "description": "Schema for the file provided with params.input",
     "type": "array",
     "items": {

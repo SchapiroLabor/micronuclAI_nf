@@ -4,3 +4,4 @@ nf_core_version: "2.14.1"
 lint:
   nextflow_config:
     - manifest.homePage
+  multiqc_config: False
