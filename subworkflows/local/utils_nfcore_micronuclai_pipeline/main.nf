@@ -239,8 +239,8 @@ def finalizeSummaryFile(csvFile) {
 def error_arm_mesmer() {
     if (workflow.profile.contains('arm') && params.segmentation_method == 'mesmer') {
         log.error "Error: The 'mesmer' segmentation method is not compatible with the 'arm' profile. Please select Cellpose (arm supported) or Stardist (amd emulation) for segmentation."
+        exit 1
     }
-    exit 1
 }
 //
 // Exit pipeline if incorrect --genome key provided
