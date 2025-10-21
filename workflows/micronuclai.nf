@@ -87,12 +87,6 @@ workflow MICRONUCLAI {
         def result = arrangeSummaryFiles(meta, summary)
         return result
         }.set{ ch_summary_rearranged }
-    //ch_summary_rearranged
-    //    .collectFile(name: 'summary.all_samples.csv', newLine: true)
-    //    .map{ file ->
-    //        def result = finalizeSummaryFile(file)
-    //        return result
-    //    }.set { finalized_summary }
 
     //
     // Collate and save software versions

@@ -18,12 +18,12 @@ process MICRONUCLAI_PREDICT {
     script:
     def args    = task.ext.args   ?: ''
     def prefix  = task.ext.prefix ?: "${meta.id}"
-    def VERSION = '0.0.1'
+    def VERSION = '1.0.0'
     """
-    python /micronuclAI/src/model/prediction2.py \\
+    PYTHONPATH=/micronuclAI python -m src.model.micronuclai_predict \\
         -i $image \\
         -m $mask \\
-        -mod /micronuclAI/micronuclAI_model/micronuclai.pt \\
+        -mod /micronuclAI/models/micronuclai.pt \\
         -o . \\
         $args
 
