@@ -17,7 +17,6 @@ process MICRONUCLAI_PREDICT {
 
     script:
     def args    = task.ext.args   ?: ''
-    def prefix  = task.ext.prefix ?: "${meta.id}"
     def VERSION = '1.0.0'
     """
     PYTHONPATH=/micronuclAI python -m src.model.micronuclai_predict \\
@@ -34,7 +33,6 @@ process MICRONUCLAI_PREDICT {
     """
 
     stub:
-    def args   = task.ext.args   ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     def VERSION = '0.0.1'
     """
