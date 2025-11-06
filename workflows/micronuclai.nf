@@ -6,6 +6,7 @@
 
 // local modules
 include { MICRONUCLAI_PREDICT    } from '../modules/local/micronuclai'
+include { GETCHANNEL             } from '../modules/local/getchannel'
 
 // nf-core modules
 include { CELLPOSE               } from '../modules/nf-core/cellpose/main'
@@ -38,6 +39,20 @@ workflow MICRONUCLAI {
     ch_multiqc_files = Channel.empty()
 
     //
+    // SECTION: extract DAPI channel
+    //
+    if (params.extract_channel){
+        GETCHANNEL( ch_samplesheet.map{it->tuple(it[0],it[1])}, params.dapi_index )
+        ch_versions = ch_versions.mix( GETCHANNEL.out.versions )
+        segmentation_in = GETCHANNEL.out.dapi
+    }
+    else {
+        ch_samplesheet.set{
+            segmentation_in = ch_samplesheet
+        }
+    }
+
+    //
     // SECTION: run segmentation
     //
     if (!params.skip_segmentation){
@@ -47,7 +62,7 @@ workflow MICRONUCLAI {
         // MODULE: Run CELLPOSE
         //
         CELLPOSE(
-            ch_samplesheet,
+            segmentation_in,
             params.cellpose_custom_model ? Channel.fromPath(params.cellpose_custom_model) : []
         )
         ch_versions = ch_versions.mix(CELLPOSE.out.versions)
@@ -57,7 +72,7 @@ workflow MICRONUCLAI {
         // MODULE: Run STARDIST
         //
         STARDIST(
-            ch_samplesheet
+            segmentation_in
         )
         ch_versions = ch_versions.mix(STARDIST.out.versions)
         segmentation_out = segmentation_out.mix(STARDIST.out.mask)
@@ -65,17 +80,18 @@ workflow MICRONUCLAI {
         // MODULE: Run DEEPCELL_MESMER
         //
         DEEPCELL_MESMER(
-            ch_samplesheet,
+            segmentation_in,
             [[:],[]]
         )
         ch_versions = ch_versions.mix(DEEPCELL_MESMER.out.versions)
         segmentation_out = segmentation_out.mix(DEEPCELL_MESMER.out.mask)
-        ch_samplesheet
+        segmentation_in
             .join( segmentation_out )
             .set { micronuclAI_in }
     }
     else{
-        ch_samplesheet
+        segmentation_in
+            .join( ch_samplesheet.map{it->tuple(it[0],it[2])})
             .set { micronuclAI_in }
     }
     //

@@ -9,8 +9,8 @@ process GETCHANNEL {
     val(dapi_index)
 
     output:
-    tuple val(meta), path("*_DAPI.tiff"), emit: dapi
-    path "versions.yml"                , emit: versions
+    tuple val(meta), path("*.tiff"), emit: dapi
+    path "versions.yml"            , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -21,7 +21,7 @@ process GETCHANNEL {
     """
     getchannel.py \\
         --input ${image} \\
-        --output ${prefix}_DAPI.tiff \\
+        --output ${prefix}.tiff \\
         --DAPI_index ${dapi_index} \\
         $args
 
