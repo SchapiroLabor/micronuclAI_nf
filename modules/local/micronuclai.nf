@@ -17,6 +17,7 @@ process MICRONUCLAI_PREDICT {
 
     script:
     def args    = task.ext.args   ?: ''
+    def prefix  = task.ext.prefix ?: "${meta.id}"
     def VERSION = '1.0.0'
     """
     PYTHONPATH=/micronuclAI python -m src.model.micronuclai_predict \\
@@ -25,6 +26,9 @@ process MICRONUCLAI_PREDICT {
         -mod /micronuclAI/models/micronuclai.pt \\
         -o . \\
         $args
+
+    mv cell_predictions.csv ${prefix}_cell_predictions.csv
+    mv cell_summary.csv ${prefix}_cell_summary.csv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
